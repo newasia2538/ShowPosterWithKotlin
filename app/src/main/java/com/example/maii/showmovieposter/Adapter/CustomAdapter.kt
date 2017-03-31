@@ -1,11 +1,13 @@
 package com.example.maii.showmovieposter.Adapter
 
 import android.content.Context
+import android.graphics.Point
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import com.example.maii.showmovieposter.Models.Movies
 import com.example.maii.showmovieposter.R
@@ -38,13 +40,44 @@ class CustomAdapter constructor(context: Context, dataset: List<Movies.ResultsBe
         return viewHolder
     }
 
-    override fun getItemCount()= listMovie?.size ?: 0
+    override fun getItemCount() = listMovie?.size ?: 0
 
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        var movie = listMovie?.get(position) as Movies
-        Log.d("test",movie.toString())
-        Picasso.with(mContext).load("http://image.tmdb.org/t/p/w342/" + movie.results?.get(position)?.poster_path).into(holder?.imageView)
+
+        Log.d("test", listMovie.toString())
+        setPosterSize(position, holder)
+
+    }
+
+    fun setPosterSize(i: Int, holder: ViewHolder?) {
+
+        val wm = mContext?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = wm.defaultDisplay
+        var size = Point()
+        display.getSize(size)
+        var width = size.x
+        var height = size.y
+
+
+        if (width <= height) {
+
+            Picasso.with(mContext)
+                    .load("http://image.tmdb.org/t/p/w342/" + listMovie?.get(i)?.poster_path)
+//                    .fit()
+                    .resize(width / 2, height /2)
+                    .into(holder?.imageView)
+
+        } else if (width > height) {
+
+            Picasso.with(mContext)
+                    .load("http://image.tmdb.org/t/p/w342/" + listMovie?.get(i)?.poster_path)
+//                    .fit()
+                    .resize(width / 2, height)
+                    .into(holder?.imageView)
+
+        }
+
     }
 
 

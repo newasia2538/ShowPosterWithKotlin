@@ -15,27 +15,30 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
+    var list : List<Movies.ResultsBean>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var mRecyclerView = findViewById(R.id.recycler_view) as RecyclerView
+        initMovies()
 
-        mRecyclerView.setHasFixedSize(true)
 
-        var mLayoutManager = GridLayoutManager(this, 2)
-        mRecyclerView.layoutManager = mLayoutManager
-
-        var mAdapter = CustomAdapter(this, initMovies())
-        Log.d("afterInit", "working")
-        mRecyclerView.adapter = mAdapter
     }
 
-    fun initMovies(): List<Movies.ResultsBean>? {
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    fun initMovies() {
 
         Log.i("onInit", "working")
 
-        var dataSet: List<Movies.ResultsBean>? = null
 
         var service = RetrofitBuilder.getInst()
                 .getService()
@@ -44,12 +47,14 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<Movies>?, response: Response<Movies>?) {
                 if (response != null) {
-                    if(response.isSuccessful)
-                        dataSet = response?.body()?.results
-                    else Log.e("onResponse",response.message())
+                    if (response.isSuccessful) {
+                        list = response.body().results
+                        initAdapter(list)
+                    }
+                    else Log.e("onResponse", response.message())
                 }
 
-                Log.d("onResponse", dataSet.toString())
+                Log.d("onResponse", response?.body()?.results.toString())
             }
 
             override fun onFailure(call: Call<Movies>?, t: Throwable?) {
@@ -59,7 +64,20 @@ class MainActivity : AppCompatActivity() {
 
         )
 
-        return dataSet
+
+    }
+
+    fun initAdapter(list: List<Movies.ResultsBean>?) {
+
+        var mRecyclerView = findViewById(R.id.recycler_view) as RecyclerView
+
+        mRecyclerView.setHasFixedSize(true)
+
+        var mLayoutManager = GridLayoutManager(this, 2)
+        mRecyclerView.layoutManager = mLayoutManager
+
+        var mAdapter = CustomAdapter(this, list)
+        mRecyclerView.adapter = mAdapter
     }
 
 
