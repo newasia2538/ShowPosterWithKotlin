@@ -5,4 +5,6 @@ package com.example.maii.showmovieposter.Models
  */
 object Constant {
     var id = "f76f874a27c86a07070dc3d9bd82009a"
+    var POSITION_INDEX = "positionIndex"
+    var LIST = "list"
 }

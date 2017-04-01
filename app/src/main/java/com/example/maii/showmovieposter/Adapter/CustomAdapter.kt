@@ -40,6 +40,8 @@ class CustomAdapter constructor(context: Context, dataset: List<Movies.ResultsBe
         return viewHolder
     }
 
+
+
     override fun getItemCount() = listMovie?.size ?: 0
 
 
@@ -64,7 +66,6 @@ class CustomAdapter constructor(context: Context, dataset: List<Movies.ResultsBe
 
             Picasso.with(mContext)
                     .load("http://image.tmdb.org/t/p/w342/" + listMovie?.get(i)?.poster_path)
-//                    .fit()
                     .resize(width / 2, height /2)
                     .into(holder?.imageView)
 
@@ -72,7 +73,6 @@ class CustomAdapter constructor(context: Context, dataset: List<Movies.ResultsBe
 
             Picasso.with(mContext)
                     .load("http://image.tmdb.org/t/p/w342/" + listMovie?.get(i)?.poster_path)
-//                    .fit()
                     .resize(width / 2, height)
                     .into(holder?.imageView)
 

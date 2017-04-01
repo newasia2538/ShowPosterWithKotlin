@@ -18,7 +18,54 @@ class Movies:Parcelable {
     var total_pages: Int = 0
     var results: List<ResultsBean>? = null
 
-    class ResultsBean {
+    class ResultsBean : Parcelable {
+
+        companion object {
+            @JvmField
+            val CREATOR = object : Parcelable.Creator<Movies.ResultsBean?> {
+                override fun createFromParcel(source: Parcel?): Movies.ResultsBean {
+                    return Movies.ResultsBean()
+                }
+
+                override fun newArray(size: Int): Array<Movies.ResultsBean?> {
+                    return arrayOfNulls<Movies.ResultsBean?>(size)
+                }
+            }
+        }
+
+
+        override fun writeToParcel(dest: Parcel?, flags: Int) {
+            dest?.writeString(poster_path)
+            dest?.writeString(overview)
+            dest?.writeInt(id)
+            dest?.writeString(original_title)
+            dest?.writeString(original_language)
+            dest?.writeString(backdrop_path)
+            dest?.writeDouble(popularity)
+            dest?.writeInt(vote_count)
+            dest?.writeDouble(vote_average)
+            dest?.writeSerializable(release_date)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        protected fun ResultsBean(`in`: Parcel) {
+            poster_path = `in`.readString()
+            overview = `in`.readString()
+            id = `in`.readInt()
+            original_title = `in`.readString()
+            original_language = `in`.readString()
+            backdrop_path = `in`.readString()
+            popularity = `in`.readDouble()
+            vote_count = `in`.readInt()
+            vote_average = `in`.readDouble()
+            release_date = `in`.readString()
+
+        }
+
+
 
         /**
          * poster_path : /e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg
@@ -66,16 +113,21 @@ class Movies:Parcelable {
 
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeString(results?.get(flags)?.poster_path)
-        dest?.writeString(results?.get(flags)?.overview)
-        dest?.writeInt(results?.get(flags)?.id!!)
-        dest?.writeString(results?.get(flags)?.original_title)
-        dest?.writeString(results?.get(flags)?.original_language)
-        dest?.writeString(results?.get(flags)?.backdrop_path)
-        dest?.writeDouble(results?.get(flags)?.popularity!!)
-        dest?.writeInt(results?.get(flags)?.vote_count!!)
-        dest?.writeDouble(results?.get(flags)?.vote_average!!)
-        dest?.writeSerializable(results?.get(flags)?.release_date)
+
+        dest?.writeInt(page)
+        dest?.writeInt(total_results)
+        dest?.writeInt(total_pages)
+        dest?.writeList(results)
+
+    }
+
+    protected fun Movies (`in`: Parcel) {
+
+        page = `in`.readInt()
+        total_pages = `in`.readInt()
+        total_results = `in`.readInt()
+        `in`.readTypedList<Movies.ResultsBean>(results,ResultsBean.CREATOR)
+
     }
 
     override fun describeContents(): Int {
